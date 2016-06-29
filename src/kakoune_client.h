@@ -19,14 +19,16 @@ private:
     QProcess m_process;
     QByteArray m_buffer;
     QObject* m_kakounePane;
+    bool m_canWrite;
 
 public:
     KakouneClient(const QString& session, QObject* component):
-        m_kakounePane(component)
+        m_kakounePane(component),
+        m_canWrite(false)
     {
         connect(&m_process, &QProcess::readyReadStandardOutput, [=] () {
-              qDebug() << "blocked on read";
               m_buffer.append(m_process.readAllStandardOutput());
+              m_canWrite = true;
 
               int last = 0;
               int lineSplit = m_buffer.indexOf("\n");
@@ -43,6 +45,7 @@ public:
         connect(&m_process, &QProcess::readyReadStandardError, [=] () {
                 qDebug() << "stderr: " << m_process.readAllStandardError();
         });
+
         connect(component, SIGNAL(sendKey(QString)), this, SLOT(rpc_keys(QString)));
         connect(component, SIGNAL(sendResize(int, int)), this, SLOT(rpc_resize(int, int)));
 
@@ -68,7 +71,7 @@ public slots:
     {
 
         QJsonObject req{
-            {{"jsonrpc", "2.0"}, {"method", "resize"}, {"params", QJsonArray{"1", y}}}
+            {{"jsonrpc", "2.0"}, {"method", "resize"}, {"params", QJsonArray{x, y}}}
         };
 
         do_rpc_call(req);
@@ -77,12 +80,12 @@ public slots:
 private:
     void do_rpc_call(QJsonObject req)
     {
+        if (!m_canWrite) return;
+
         QByteArray rpc = QJsonDocument{req}.toJson(QJsonDocument::Compact);
         rpc.append('\n');
         m_process.write(rpc);
         m_process.waitForBytesWritten();
     }
-
-
 };
 
