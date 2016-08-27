@@ -5,11 +5,10 @@ function escapeHtml(string) {
         "<": "&lt;",
         ">": "&gt;",
         '"': '&quot;',
-        "'": '&#39;',
-        "/": '&#x2F;'
+        "'": '&#39;'
     };
 
-    return String(string).replace(/[&<>"'\//]/g, function (s) {
+    return String(string).replace(/[&<>"']/g, function (s) {
         return entityMap[s];
     });
 }
