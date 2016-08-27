@@ -61,7 +61,13 @@ Item {
     signal sendKey(string keys)
 
     Keys.onPressed: {
-        item.sendKey(KeyHelper.convertKey(event.key, event.text));
+        var has_shift = true && (event.modifiers & Qt.ShiftModifier);
+        var has_alt = true && (event.modifiers & Qt.AltModifier);
+        var has_ctrl = true && (event.modifiers & Qt.ControlModifier);
+
+        if (event.text != '') {
+            item.sendKey(KeyHelper.convertKey(event.key, event.text, has_shift, has_alt, has_ctrl));
+        }
         event.accepted = false;
     }
 
@@ -120,7 +126,7 @@ Item {
 
       default_face = face_or_default(default_face);
 
-      console.log(JSON.stringify(lines, null, 2));
+      //console.log(JSON.stringify(lines, null, 2));
 
       var text = '<pre>';
       for (var i = 0; i < lines.length; i++) {
