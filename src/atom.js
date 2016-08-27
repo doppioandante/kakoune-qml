@@ -9,7 +9,7 @@ function escapeHtml(string) {
         "/": '&#x2F;'
     };
 
-    return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return String(string).replace(/[&<>"'\//]/g, function (s) {
         return entityMap[s];
     });
 }
@@ -17,7 +17,7 @@ function escapeHtml(string) {
 function render(text, face, default_face) {
     text = escapeHtml(text).replace(' ', '&nbsp;').replace("\n", '<br/>');
 
-    var style = ''
+    var style = '';
     if (face.fg !== default_face.fg) {
         style += "color: '" + face.fg + "';";
     }

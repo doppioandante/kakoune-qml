@@ -1,21 +1,24 @@
-import QtQuick 2.3
+import QtQuick 2.7
 import "atom.js" as Atom
 import "key_helpers.js" as KeyHelper
 
 Item {
     id: item
     Rectangle {
-        id: editorBg
-        y: editor.y
-        height: editor.height
-        width: editor.width
-    }
-    Text {
-        id: editor
-        textFormat: TextEdit.RichText
-
-        anchors.top: parent.top
+        id: editorBgRectangle
+        width: parent.width
+        height: { parent.height - statusBar.height }
         anchors.bottom: statusBar.top
+        color: defaultColor
+        property color defaultColor: "#FFFFCC"
+
+
+        Text {
+            id: editor
+            textFormat: TextEdit.RichText
+
+            anchors.fill: parent
+        }
     }
 
     Rectangle {
@@ -52,14 +55,14 @@ Item {
     }
 
     function processRpc(line) {
-try{
-        var rpc = JSON.parse(line);
-} catch(e) {
-console.log(line);
-}
+        try{
+            var rpc = JSON.parse(line);
+        }
+        catch(e) {
+           // pass and hope the next line is valid
+        }
 
-        switch (rpc.method)
-        {
+        switch (rpc.method) {
             case 'draw':
               rpc_draw(rpc.params);
             break;
@@ -77,7 +80,6 @@ console.log(line);
         var status_line = params[0];
         var mode_line = params[1];
         var default_face = params[2];
-
 
         statusBar.color = default_face.bg == 'default' ? 'white' : default_face.bg;
         statusLine.font.family = "Monospace";
@@ -109,10 +111,9 @@ console.log(line);
          }
       }
 
-      editorBg.color = default_face.bg == 'default' ? 'white' : default_face.bg;
+      editorBgRectangle.color = default_face.bg == 'default' ? editorBgRectangle.defaultColor : default_face.bg;
       editor.font.family = "Monospace";
       editor.font.color = default_face.fg;
-      console.log('drawing');
 
       editor.text = text;
     }
@@ -131,10 +132,15 @@ console.log(line);
 
         function doSendResize() {
             item.sendResize(
-                Math.floor(item.width/20),
-                Math.floor(item.height/20)
+                Math.floor(Math.floor(editor.height / monospaceMetrics.height)),
+                Math.floor(Math.floor(item.width  / (monospaceMetrics.averageCharacterWidth)))
             );
         }
+    }
+
+    FontMetrics {
+        id: monospaceMetrics
+        font.family: editor.font.family
     }
 }
 

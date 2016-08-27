@@ -46,10 +46,15 @@ public:
                 qDebug() << "stderr: " << m_process.readAllStandardError();
         });
 
+        connect(&m_process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+            [=] (int code, QProcess::ExitStatus) {
+            	qDebug() << "Process exited with code: " << code;
+        });
+
         connect(component, SIGNAL(sendKey(QString)), this, SLOT(rpc_keys(QString)));
         connect(component, SIGNAL(sendResize(int, int)), this, SLOT(rpc_resize(int, int)));
 
-        m_process.start("kak", {"-ui", "json", "-c", "headless"});
+        m_process.start("kak", {"-ui", "json"});
     }
 
     ~KakouneClient()
