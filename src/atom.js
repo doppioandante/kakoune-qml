@@ -13,20 +13,27 @@ function escapeHtml(string) {
     });
 }
 
-function render(text, face, default_face) {
-    text = escapeHtml(text).replace(' ', '&nbsp;').replace("\n", '<br/>');
+function render(text, face) {
+    text = escapeHtml(text);
+    var attributes = face.attributes;
 
     var style = '';
-    if (face.fg !== default_face.fg) {
-        style += "color: '" + face.fg + "';";
-    }
-    if (face.bg !== default_face.bg) {
-        style += "background-color: '" + face.bf + "';";
-    }
+    style += "color:'" + face.fg + "';";
+    style += "background-color:'" + face.bg + "';";
 
-    if (style !== '') {
-        text = '<span style="' + style + ' white-space: pre;">' + text + '</span>';
+    if (attributes.indexOf('underline') != -1)
+    {
+        text = '<u>' + text + '</u>';
     }
-    return text;
+    if (attributes.indexOf('bold') != -1)
+    {
+        text = '<b>' + text + '</b>';
+    }
+    if (attributes.indexOf('italic') != -1)
+    {
+        text = '<i>' + text + '</i>';
+    }
+    // TODO: exclusive, blink, dim, reverse
+    return '<code style="' + style + '">' + text + '</code>';
 }
 
