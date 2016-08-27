@@ -23,12 +23,10 @@ private:
 
 public:
     KakouneClient(const QString& session, QObject* component):
-        m_kakounePane(component),
-        m_canWrite(false)
+        m_kakounePane(component)
     {
         connect(&m_process, &QProcess::readyReadStandardOutput, [=] () {
               m_buffer.append(m_process.readAllStandardOutput());
-              m_canWrite = true;
 
               int last = 0;
               int lineSplit = m_buffer.indexOf("\n");
@@ -74,19 +72,19 @@ public slots:
 
     void rpc_resize(int x, int y)
     {
+        if (x > 0 and y > 0)
+        {
+            QJsonObject req{
+                {{"jsonrpc", "2.0"}, {"method", "resize"}, {"params", QJsonArray{x, y}}}
+            };
 
-        QJsonObject req{
-            {{"jsonrpc", "2.0"}, {"method", "resize"}, {"params", QJsonArray{x, y}}}
-        };
-
-        do_rpc_call(req);
+            do_rpc_call(req);
+        }
     }
 
 private:
     void do_rpc_call(QJsonObject req)
     {
-        if (!m_canWrite) return;
-
         QByteArray rpc = QJsonDocument{req}.toJson(QJsonDocument::Compact);
         rpc.append('\n');
         m_process.write(rpc);

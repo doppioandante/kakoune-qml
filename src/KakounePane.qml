@@ -13,9 +13,8 @@ Item {
         id: editorBgRectangle
         width: parent.width
         height: { parent.height - statusBar.height }
-        anchors.bottom: statusBar.top
+        anchors.bottom: menuBgRectangle.top
         color: defaultBg
-
 
         Text {
             id: editor
@@ -25,6 +24,41 @@ Item {
             anchors.fill: parent
             // TODO ??
             anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
+    Rectangle {
+       id: menuBgRectangle
+
+       visible: true
+       width: parent.width
+
+       height: {
+          // get number of columns
+          if (menu.cellWidth == 0) return 0;
+
+          var items_per_row = Math.floor(width / menu.cellWidth);
+          var rows = Math.floor(menu.model.count / items_per_row);
+          if (rows == 0 && menu.model.count > 0) {
+             rows = 1;
+          }
+
+          // limit to 10 rows
+          return (rows > 10 ? 10 : rows) * menu.cellHeight;
+       }
+       color: menu.bgColor
+       clip: true
+
+       anchors.bottom: statusBar.top
+
+       KakouneMenu {
+          id: menu
+          fgColor: 'black'
+          bgColor: 'white'
+
+          cellHeight: menuEntryMetrics.height
+
+          anchors.fill: parent
         }
     }
 
@@ -46,7 +80,7 @@ Item {
             anchors.margins: 5
         }
 
-        Text {
+       Text {
             id: modeLine
             textFormat: TextEdit.RichText
             font.family: "Monospace";
@@ -90,6 +124,18 @@ Item {
 
             case 'refresh':
             break;
+
+            case 'menu_show':
+              rpc_menu_show(rpc.params);
+            break;
+
+            case 'menu_hide':
+              rpc_menu_hide();
+            break;
+
+            case 'menu_select':
+              rpc_menu_select(rpc.params);
+            break;
         }
     }
 
@@ -97,6 +143,8 @@ Item {
         var status_line = params[0];
         var mode_line = params[1];
         var default_face = params[2];
+
+      //console.log(JSON.stringify(mode_line, null, 2));
         
         default_face = face_or_default(default_face);
 
@@ -147,12 +195,49 @@ Item {
       }
     }
 
+    function rpc_menu_show(params) {
+       var items = params[0];
+       var anchor = params[1];
+       var fg = params[2];
+       var bg = params[3];
+       var style = params[4];
+
+       if (style == 'prompt') {
+          menu.model.clear();
+          var maxWidth = 0;
+          for (var i = 0; i < items.length; i++) {
+             menu.model.append({
+                entryText: items[i][0].contents
+             });
+             menuEntryMetrics.text = items[i][0].contents
+             maxWidth = max(maxWidth, menuEntryMetrics.width);
+          } 
+          menu.hintCellWidth = maxWidth;
+       }
+
+       menuBgRectangle.visible = true;
+    }
+
+    function rpc_menu_hide() {
+       menu.model.clear();
+       menuBgRectangle.visible = false;
+    }
+
+    function rpc_menu_select(params) {
+       var id = params[0];
+
+       menu.currentIndex = id;
+       console.log(menu.highlightItem);
+    }
+
     function face_or_default(face) {
        var fg = face.fg == 'default' ? item.defaultFg : face.fg;
        var bg = face.bg == 'default' ? item.defaultBg : face.bg;
 
        return {fg: fg, bg: bg, attributes: face.attributes};
     }
+
+    function max(a, b) { return a > b ? a : b }
 
     signal sendResize(int x, int y)
 
@@ -163,8 +248,8 @@ Item {
 
         function doSendResize() {
             item.sendResize(
-                Math.floor(Math.floor(editor.height / monospaceMetrics.height)),
-                Math.floor(Math.floor(item.width  / monospaceMetrics.averageCharacterWidth))
+                Math.floor(editor.height / monospaceMetrics.height),
+                Math.floor(item.width / monospaceMetrics.averageCharacterWidth)
             );
         }
     }
@@ -172,6 +257,11 @@ Item {
     FontMetrics {
         id: monospaceMetrics
         font.family: editor.font.family
+    }
+
+    TextMetrics {
+        id: menuEntryMetrics
+        text: "a"
     }
 }
 

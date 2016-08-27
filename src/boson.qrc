@@ -2,6 +2,7 @@
 	<qresource prefix="/">
 		<file>boson.qml</file>
                 <file>KakounePane.qml</file>
+                <file>KakouneMenu.qml</file>
                 <file>atom.js</file>
                 <file>key_helpers.js</file>
 	</qresource>
