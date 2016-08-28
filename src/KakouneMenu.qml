@@ -73,5 +73,5 @@ GridView {
       y: menu.currentItem.y
    }
 
-   onCurrentItemChanged: console.log(model.get(menu.currentIndex).name + ' selected')
+   onCurrentItemChanged: { /*console.log(model.get(menu.currentIndex).name + ' selected')*/ }
 }

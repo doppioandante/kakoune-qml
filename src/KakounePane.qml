@@ -13,7 +13,7 @@ Item {
         id: editorBgRectangle
         width: parent.width
         height: { parent.height - statusBar.height }
-        anchors.bottom: menuBgRectangle.top
+        anchors.bottom: statusBar.top
         color: defaultBg
 
         Text {
@@ -22,18 +22,29 @@ Item {
             font.family: "Monospace"
 
             anchors.fill: parent
-            // TODO ??
             anchors.verticalCenter: parent.verticalCenter
         }
     }
 
     Rectangle {
        id: menuBgRectangle
+       visible: false
 
-       visible: true
-       width: parent.width
+       color: menu.bgColor
+       clip: true
 
-       height: {
+       KakouneMenu {
+          id: menu
+          fgColor: 'black'
+          bgColor: 'white'
+
+          cellHeight: menuEntryMetrics.height
+
+          anchors.fill: parent
+       }
+
+
+       function computeHeight() {
           // get number of columns
           if (menu.cellWidth == 0) return 0;
 
@@ -46,20 +57,6 @@ Item {
           // limit to 10 rows
           return (rows > 10 ? 10 : rows) * menu.cellHeight;
        }
-       color: menu.bgColor
-       clip: true
-
-       anchors.bottom: statusBar.top
-
-       KakouneMenu {
-          id: menu
-          fgColor: 'black'
-          bgColor: 'white'
-
-          cellHeight: menuEntryMetrics.height
-
-          anchors.fill: parent
-        }
     }
 
     Rectangle {
@@ -202,17 +199,36 @@ Item {
        var bg = params[3];
        var style = params[4];
 
+       if (style != 'prompt' && style != 'inline') return;
+
+       menu.model.clear();
+       var maxWidth = 0;
+       for (var i = 0; i < items.length; i++) {
+          menu.model.append({
+             entryText: items[i][0].contents
+          });
+          menuEntryMetrics.text = items[i][0].contents
+          maxWidth = max(maxWidth, menuEntryMetrics.width);
+       } 
+       menu.hintCellWidth = maxWidth;
+
        if (style == 'prompt') {
-          menu.model.clear();
-          var maxWidth = 0;
-          for (var i = 0; i < items.length; i++) {
-             menu.model.append({
-                entryText: items[i][0].contents
-             });
-             menuEntryMetrics.text = items[i][0].contents
-             maxWidth = max(maxWidth, menuEntryMetrics.width);
-          } 
-          menu.hintCellWidth = maxWidth;
+          menuBgRectangle.width = item.width;
+          menuBgRectangle.height = menuBgRectangle.computeHeight();
+          menuBgRectangle.anchors.bottom = statusBar.top;
+          editorBgRectangle.anchors.bottom = menuBgRectangle.top;
+       }
+       else {
+          var x = (anchor.column + 1) * monospaceMetrics.averageCharacterWidth + editorBgRectangle.x;
+          var y = (anchor.line + 1) * monospaceMetrics.height + editorBgRectangle.y;
+
+          var width = item.width - x;
+          if (width > 0.4 * item.width) width = 0.4 * item.width;
+         
+          menuBgRectangle.width = width;
+          menuBgRectangle.height = menuBgRectangle.computeHeight();
+          menuBgRectangle.x = x;
+          menuBgRectangle.y = y;
        }
 
        menuBgRectangle.visible = true;
@@ -220,6 +236,8 @@ Item {
 
     function rpc_menu_hide() {
        menu.model.clear();
+       menuBgRectangle.anchors.bottom = undefined;
+       editorBgRectangle.anchors.bottom = statusBar.top;
        menuBgRectangle.visible = false;
     }
 
@@ -239,6 +257,7 @@ Item {
 
     function max(a, b) { return a > b ? a : b }
 
+
     signal sendResize(int x, int y)
 
     Connections {
@@ -249,7 +268,7 @@ Item {
         function doSendResize() {
             item.sendResize(
                 Math.floor(editor.height / monospaceMetrics.height),
-                Math.floor(item.width / monospaceMetrics.averageCharacterWidth)
+                Math.floor(editorBgRectangle.width / monospaceMetrics.averageCharacterWidth)
             );
         }
     }
