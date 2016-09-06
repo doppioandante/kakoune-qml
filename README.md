@@ -1,10 +1,10 @@
 # QML interface for [Kakoune](https://github.com/mawww/kakoune)
 
 ## Requirements
-* Cmake version 3.1 or later
+* Cmake 3.1 or later
 * Qt development files, 5.7 or later
 
-# Building
+## Building
 ```
 mkdir build
 cd build && cmake ..
