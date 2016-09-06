@@ -7,11 +7,11 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    QQmlApplicationEngine engine(QUrl("qrc:/boson.qml"));
+    QQmlApplicationEngine engine(QUrl("qrc:/mainwindow.qml"));
 
     QObject* kakPane = engine.rootObjects()[0]->children()[0];
 
-    KakouneClient clt{"boson", kakPane};
+    KakouneClient clt{"kakouneqml", kakPane};
 
     return app.exec();
 }
