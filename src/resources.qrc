@@ -1,9 +1,10 @@
 <RCC>
 	<qresource prefix="/">
 		<file>mainwindow.qml</file>
-                <file>KakounePane.qml</file>
-                <file>KakouneMenu.qml</file>
-                <file>atom.js</file>
-                <file>key_helpers.js</file>
+		<file>KakounePane.qml</file>
+		<file>KakouneMenu.qml</file>
+		<file>StatusBar.qml</file>
+		<file>atom.js</file>
+		<file>key_helpers.js</file>
 	</qresource>
 </RCC>

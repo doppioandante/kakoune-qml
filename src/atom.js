@@ -8,7 +8,7 @@ function escapeHtml(string) {
         "'": '&#39;'
     };
 
-    return String(string).replace(/[&<>"']/g, function (s) {
+    return String(string).replace(/[&<>"']/g, function (s) { // "
         return entityMap[s];
     });
 }
@@ -37,3 +37,9 @@ function render(text, face) {
     return '<code style="' + style + '">' + text + '</code>';
 }
 
+function default_face(face, default_face) {
+    var fg = face.fg == 'default' ? default_face.fg : face.fg
+    var bg = face.bg == 'default' ? default_face.bg : face.bg
+
+    return {fg: fg, bg: bg, attributes: face.attributes}
+}

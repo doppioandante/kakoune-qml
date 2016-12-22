@@ -1,6 +1,7 @@
 import QtQuick 2.7
 
 GridView {
+   // remove id, move delegate component in another file?
    id: menu
    focus: true
 
