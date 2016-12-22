@@ -3,7 +3,7 @@ import QtQuick.Window 2.2
 
 Window {
     visible: true
-    title: "boson"
+    title: "Kakoune"
 
     width: 600
     height: 400
