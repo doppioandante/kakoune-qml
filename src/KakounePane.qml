@@ -33,11 +33,8 @@ Item {
        color: menu.bgColor
        clip: true
 
-       KakouneMenu {
+       Menu {
           id: menu
-          fgColor: 'black'
-          bgColor: 'white'
-
           cellHeight: menuEntryMetrics.height
 
           anchors.fill: parent
@@ -162,17 +159,29 @@ Item {
        var bg = params[3]
        var style = params[4]
 
-       if (style != 'prompt' && style != 'inline') return
+       var default_face = {
+          fg: fg == 'default' ? 'black' : fg,
+          bg: bg == 'default' ? 'white' : bg
+       }
 
+       if (style != 'prompt' && style != 'inline') return
        menu.model.clear()
        var maxWidth = 0
+//       console.log(JSON.stringify(items, null, 2))
        for (var i = 0; i < items.length; i++) {
+          var text = '<pre>'; 
+          for (var j = 0; j < items[i].length; j++) {
+             text += Atom.render(items[i][j].contents, Atom.default_face(items[i][j].face, default_face))
+          }
+          text += '</pre>';
           menu.model.append({
-             entryText: items[i][0].contents
+             entryText: text
           })
           menuEntryMetrics.text = items[i][0].contents
           maxWidth = max(maxWidth, menuEntryMetrics.width)
        } 
+       // FIXME
+       menu.bgColor = 'white' //default_face.bg
        menu.hintCellWidth = maxWidth
 
        if (style == 'prompt') {
@@ -208,7 +217,10 @@ Item {
        var id = params[0]
 
        menu.currentIndex = id
-       console.log(menu.highlightItem)
+       //console.log("---")
+       //console.log(id)
+       //console.log(menu.highlightItem)
+       //console.log("---")
     }
 
     function face_or_default(face) {

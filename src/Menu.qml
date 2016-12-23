@@ -5,7 +5,6 @@ GridView {
    id: menu
    focus: true
 
-   property color fgColor
    property color bgColor
    property int hintCellWidth
 
@@ -37,13 +36,16 @@ GridView {
            clip: true
 
            Text {
-               anchors.left: parent.left
                id: menuEntryText
-               text: entryText
-               color: menu.fgColor
+               anchors.left: parent.left
+
+               textFormat: TextEdit.RichText
+               font.family: "Monospace"
+               text: entryText // created dynamically by rpc_menu_show
 
                width: menu.entryWidth
            }
+
            MouseArea {
                anchors.fill: parent
                hoverEnabled: true
