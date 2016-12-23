@@ -142,7 +142,8 @@ Item {
       text += '</pre>'
 
       editorBgRectangle.color = default_face.bg
-      //editor.font.color = default_face.fg
+      item.defaultFg = default_face.fg
+      item.defaultBg = default_face.bg
 
       editor.text = text
     }
