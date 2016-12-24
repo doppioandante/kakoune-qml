@@ -217,6 +217,7 @@ Item {
           menuBgRectangle.y = y
        }
 
+       menuBgRectangle.color = normal_face.bg
        menuBgRectangle.visible = true
     }
 
@@ -224,6 +225,7 @@ Item {
        menuBgRectangle.anchors.bottom = undefined
        editorBgRectangle.anchors.bottom = statusBar.top
        menuBgRectangle.visible = false
+       menuBgRectangle.x = 0
     }
 
     function rpc_menu_select(params) {

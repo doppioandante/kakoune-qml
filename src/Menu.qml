@@ -28,7 +28,6 @@ GridView {
            width:  menu.cellWidth; 
            height: menu.cellHeight
            color:  menu.normalFace.bg
-           opacity: 0.8 // TODO less opaque?
 
            Text {
                id: menuEntryText
