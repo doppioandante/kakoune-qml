@@ -130,21 +130,21 @@ Item {
       // TODO: padding face
 
       default_face = face_or_default(default_face)
-
-      console.log(JSON.stringify(lines, null, 2))
+      item.defaultFg = default_face.fg
+      item.defaultBg = default_face.bg
 
       var text = '<pre>'
       for (var i = 0; i < lines.length; i++) {
          for (var j = 0; j < lines[i].length; j++) {
-            text += Atom.render(lines[i][j].contents, face_or_default(lines[i][j].face))
+            // HACK
+            var c = lines[i][j].contents.replace('\n', ' ')
+            text += Atom.render(c, face_or_default(lines[i][j].face))
          }
          text += Atom.render("\n", default_face)
       }
       text += '</pre>'
 
       editorBgRectangle.color = default_face.bg
-      item.defaultFg = default_face.fg
-      item.defaultBg = default_face.bg
 
       editor.text = text
     }
@@ -229,8 +229,8 @@ Item {
        return Atom.default_face(face, {fg: item.defaultFg, bg: item.defaultBg})
     }
 
+    // TODO: move?
     function max(a, b) { return a > b ? a : b }
-
 
     signal sendResize(int x, int y)
 
