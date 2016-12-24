@@ -1,7 +1,6 @@
 'use strict';
 
 var special_table = {};
-
 special_table[Qt.Key_Return]       = 'ret';
 special_table[Qt.Key_Space]        = 'space';
 special_table[Qt.Key_Tab]          = 'tab';
@@ -30,10 +29,6 @@ function convertKey(code, has_shift, has_alt, has_ctrl) {
     if (found_lookup || code <= 0x0ff) {
         if (found_lookup) {
             key = special_table[code];
-
-            if (has_shift) {
-                key = key.toUpperCase();
-            }
         } else {
             var key = String.fromCharCode(code)
 
