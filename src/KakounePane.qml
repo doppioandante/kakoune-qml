@@ -68,8 +68,9 @@ Item {
         var has_alt = true && (event.modifiers & Qt.AltModifier)
         var has_ctrl = true && (event.modifiers & Qt.ControlModifier)
 
-        if (event.text != '') {
-            item.sendKey(KeyHelper.convertKey(event.key, event.text, has_shift, has_alt, has_ctrl))
+        var kak_key = KeyHelper.convertKey(event.key, has_shift, has_alt, has_ctrl);
+        if (kak_key !== undefined) {
+            item.sendKey(kak_key)
         }
         event.accepted = false
     }
