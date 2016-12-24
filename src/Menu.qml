@@ -5,9 +5,10 @@ GridView {
    id: menu
    focus: true
 
-   property color bgColor
-   property int rightPaddingWidth
+   property var normalFace
+   property var selectedFace
 
+   property int rightPaddingWidth
    property int entryWidth
 
    cellWidth: {
@@ -26,8 +27,8 @@ GridView {
       Rectangle {
            width:  menu.cellWidth; 
            height: menu.cellHeight
-           color:  menu.bgColor
-           opacity: 0.8
+           color:  menu.normalFace.bg
+           opacity: 0.8 // TODO less opaque?
 
            Text {
                id: menuEntryText
@@ -62,13 +63,13 @@ GridView {
        }
    }
 
-   highlight: Rectangle {
+   /*highlight: Rectangle {
       width: menu.cellWidth;
       height: menu.cellHeight
       color: "lightsteelblue" // TODO
       x: menu.currentItem.x
       y: menu.currentItem.y
-   }
+   }*/
 
    onCurrentItemChanged: { /*console.log(model.get(menu.currentIndex).name + ' selected')*/ }
 }

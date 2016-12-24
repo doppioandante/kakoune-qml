@@ -30,7 +30,6 @@ Item {
        id: menuBgRectangle
        visible: false
 
-       color: menu.bgColor
        clip: true
 
        Menu {
@@ -157,16 +156,19 @@ Item {
     function rpc_menu_show(params) {
        var items = params[0]
        var anchor = params[1]
-       var fg = params[2]
-       var bg = params[3]
+       var selected_face = params[2]
+       var normal_face = params[3]
        var style = params[4]
 
-       var default_face = {
-          fg: fg == 'default' ? 'black' : fg,
-          bg: bg == 'default' ? 'white' : bg
-       }
+       // TODO: can be different from editor
+       normal_face = face_or_default(normal_face)
+       selected_face = face_or_default(selected_face)
+
+       menu.normalFace = normal_face
+       menu.selectedFace = selected_face
 
        if (style != 'prompt' && style != 'inline') return
+
        menu.model.clear()
        var maxWidth = 0
 
@@ -175,17 +177,16 @@ Item {
           var text = '<pre>'; 
           for (var j = 0; j < items[i].length; j++) {
              contents += items[i][j].contents
-             text += Atom.render(items[i][j].contents, Atom.default_face(items[i][j].face, default_face))
+             text += Atom.render(items[i][j].contents, Atom.default_face(items[i][j].face, normal_face))
           }
           text += '</pre>';
           menu.model.append({
-             entryText: text
+             rawText: contents,
+             entryText: text // TODO: change name
           })
           menuEntryMetrics.text = contents
           maxWidth = Math.max(maxWidth, menuEntryMetrics.advanceWidth)
        } 
-       // FIXME
-       menu.bgColor = 'white' //default_face.bg
        menu.entryWidth = maxWidth
        menu.rightPaddingWidth = 20 // FIXME with font metrics
 
@@ -199,12 +200,10 @@ Item {
           var x = (anchor.column + 1) * monospaceMetrics.averageCharacterWidth + editorBgRectangle.x
           if (x + menuBgRectangle.width > editorBgRectangle.width) {
              x = editorBgRectangle.width - menuBgRectangle.width
-
           }
 
           // TODO: rename maxWidth
           var maxEntryWidth = Math.max(x, item.width - x)
-          
           var entryWidth = Math.min(menu.cellWidth, maxEntryWidth)
          
           menuBgRectangle.width = entryWidth
@@ -229,13 +228,23 @@ Item {
     }
 
     function rpc_menu_select(params) {
+       // FIXME: expand bg color to whole selected item
        var id = params[0]
 
-       menu.currentIndex = id
-       //console.log("---")
-       //console.log(id)
-       //console.log(menu.highlightItem)
-       //console.log("---")
+       // reset highlighting
+       if (menu.currentIndex !== -1) {
+           var element = menu.model.get(menu.currentIndex)
+           element.entryText = Atom.render(element.rawText, menu.normalFace)
+       }
+
+       if (id === menu.count) {
+          menu.currentIndex = -1
+       }
+       else {
+           menu.currentIndex = id
+           var element = menu.model.get(id)
+           element.entryText = Atom.render(element.rawText, menu.selectedFace)
+       }
     }
 
     function face_or_default(face) {
