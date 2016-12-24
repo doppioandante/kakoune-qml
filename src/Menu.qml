@@ -6,17 +6,13 @@ GridView {
    focus: true
 
    property color bgColor
-   property int hintCellWidth
+   property int rightPaddingWidth
 
-   property int entryWidth 
-
-   entryWidth: {
-      return ((hintCellWidth < 100) ? hintCellWidth : 100);
-   }
+   property int entryWidth
 
    cellWidth: {
       // margin for space
-      return entryWidth + 10;
+      return entryWidth + rightPaddingWidth;
    }
 
    currentIndex: -1
@@ -32,8 +28,6 @@ GridView {
            height: menu.cellHeight
            color:  menu.bgColor
            opacity: 0.8
-
-           clip: true
 
            Text {
                id: menuEntryText
@@ -71,7 +65,7 @@ GridView {
    highlight: Rectangle {
       width: menu.cellWidth;
       height: menu.cellHeight
-      color: "lightsteelblue";
+      color: "lightsteelblue" // TODO
       x: menu.currentItem.x
       y: menu.currentItem.y
    }

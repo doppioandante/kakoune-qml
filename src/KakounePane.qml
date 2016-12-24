@@ -169,7 +169,7 @@ Item {
        if (style != 'prompt' && style != 'inline') return
        menu.model.clear()
        var maxWidth = 0
-//       console.log(JSON.stringify(items, null, 2))
+
        for (var i = 0; i < items.length; i++) {
           var text = '<pre>'; 
           for (var j = 0; j < items[i].length; j++) {
@@ -180,11 +180,12 @@ Item {
              entryText: text
           })
           menuEntryMetrics.text = items[i][0].contents
-          maxWidth = max(maxWidth, menuEntryMetrics.width)
+          maxWidth = max(maxWidth, menuEntryMetrics.advanceWidth)
        } 
        // FIXME
        menu.bgColor = 'white' //default_face.bg
-       menu.hintCellWidth = maxWidth
+       menu.entryWidth = maxWidth
+       menu.rightPaddingWidth = 20 // FIXME with font metrics
 
        if (style == 'prompt') {
           menuBgRectangle.width = item.width
