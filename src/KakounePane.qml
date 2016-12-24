@@ -171,16 +171,18 @@ Item {
        var maxWidth = 0
 
        for (var i = 0; i < items.length; i++) {
+          var contents = ''
           var text = '<pre>'; 
           for (var j = 0; j < items[i].length; j++) {
+             contents += items[i][j].contents
              text += Atom.render(items[i][j].contents, Atom.default_face(items[i][j].face, default_face))
           }
           text += '</pre>';
           menu.model.append({
              entryText: text
           })
-          menuEntryMetrics.text = items[i][0].contents
-          maxWidth = max(maxWidth, menuEntryMetrics.advanceWidth)
+          menuEntryMetrics.text = contents
+          maxWidth = Math.max(maxWidth, menuEntryMetrics.advanceWidth)
        } 
        // FIXME
        menu.bgColor = 'white' //default_face.bg
@@ -195,13 +197,23 @@ Item {
        }
        else {
           var x = (anchor.column + 1) * monospaceMetrics.averageCharacterWidth + editorBgRectangle.x
-          var y = (anchor.line + 1) * monospaceMetrics.height + editorBgRectangle.y
+          if (x + menuBgRectangle.width > editorBgRectangle.width) {
+             x = editorBgRectangle.width - menuBgRectangle.width
 
-          var width = item.width - x
-          if (width > 0.4 * item.width) width = 0.4 * item.width
+          }
+
+          // TODO: rename maxWidth
+          var maxEntryWidth = Math.max(x, item.width - x)
+          
+          var entryWidth = Math.min(menu.cellWidth, maxEntryWidth)
          
-          menuBgRectangle.width = width
+          menuBgRectangle.width = entryWidth
           menuBgRectangle.height = menuBgRectangle.computeHeight()
+
+          var y = (anchor.line + 1) * monospaceMetrics.height + editorBgRectangle.y
+          if (y + menuBgRectangle.height > editorBgRectangle.height) {
+             y -= menuBgRectangle.height + monospaceMetrics.height
+          }
           menuBgRectangle.x = x
           menuBgRectangle.y = y
        }
@@ -229,9 +241,6 @@ Item {
     function face_or_default(face) {
        return Atom.default_face(face, {fg: item.defaultFg, bg: item.defaultBg})
     }
-
-    // TODO: move?
-    function max(a, b) { return a > b ? a : b }
 
     signal sendResize(int x, int y)
 
