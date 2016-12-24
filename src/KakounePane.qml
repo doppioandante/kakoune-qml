@@ -221,7 +221,6 @@ Item {
     }
 
     function rpc_menu_hide() {
-       menu.model.clear()
        menuBgRectangle.anchors.bottom = undefined
        editorBgRectangle.anchors.bottom = statusBar.top
        menuBgRectangle.visible = false
@@ -237,7 +236,7 @@ Item {
            element.entryText = Atom.render(element.rawText, menu.normalFace)
        }
 
-       if (id === menu.count) {
+       if (id === menu.count || id === -1) { // TODO: fix in kak?, input_handler.cc:822
           menu.currentIndex = -1
        }
        else {
