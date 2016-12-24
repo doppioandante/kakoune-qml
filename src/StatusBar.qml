@@ -10,8 +10,6 @@ Rectangle {
         font.family: "Monospace"
 
         anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-
         anchors.margins: 5
     }
 
@@ -21,8 +19,6 @@ Rectangle {
         font.family: "Monospace"
 
         anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-
         anchors.margins: 5
     }
 

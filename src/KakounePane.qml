@@ -34,7 +34,7 @@ Item {
 
        Menu {
           id: menu
-          cellHeight: menuEntryMetrics.height
+          cellHeight: textMetrics.height
 
           anchors.fill: parent
        }
@@ -154,6 +154,7 @@ Item {
     }
 
     function rpc_menu_show(params) {
+       // FIXME: menu doesn't react to resize
        var items = params[0]
        var anchor = params[1]
        var selected_face = params[2]
@@ -167,7 +168,9 @@ Item {
        menu.normalFace = normal_face
        menu.selectedFace = selected_face
 
-       if (style != 'prompt' && style != 'inline') return
+       if (style != 'prompt' && style != 'inline') {
+           return
+       }
 
        menu.model.clear()
        var maxWidth = 0
@@ -184,34 +187,37 @@ Item {
              rawText: contents,
              entryText: text // TODO: change name
           })
-          menuEntryMetrics.text = contents
-          maxWidth = Math.max(maxWidth, menuEntryMetrics.advanceWidth)
+          textMetrics.text = contents
+          maxWidth = Math.max(maxWidth, textMetrics.width)
        } 
        menu.entryWidth = maxWidth
-       menu.rightPaddingWidth = 20 // FIXME with font metrics
 
        if (style == 'prompt') {
+          menu.rightPaddingWidth = 5 * fontMetrics.averageCharacterWidth
+
           menuBgRectangle.width = item.width
           menuBgRectangle.height = menuBgRectangle.computeHeight()
           menuBgRectangle.anchors.bottom = statusBar.top
           editorBgRectangle.anchors.bottom = menuBgRectangle.top
        }
        else {
-          var x = (anchor.column + 1) * monospaceMetrics.averageCharacterWidth + editorBgRectangle.x
+          var x = (anchor.column + 1) * fontMetrics.averageCharacterWidth + editorBgRectangle.x
           if (x + menuBgRectangle.width > editorBgRectangle.width) {
              x = editorBgRectangle.width - menuBgRectangle.width
           }
 
           // TODO: rename maxWidth
-          var maxEntryWidth = Math.max(x, item.width - x)
+          var maxEntryWidth = Math.max(x, editorBgRectangle.width - x)
+
+          menu.rightPaddingWidth = fontMetrics.averageCharacterWidth;
           var entryWidth = Math.min(menu.cellWidth, maxEntryWidth)
          
           menuBgRectangle.width = entryWidth
           menuBgRectangle.height = menuBgRectangle.computeHeight()
 
-          var y = (anchor.line + 1) * monospaceMetrics.height + editorBgRectangle.y
+          var y = (anchor.line + 1) * fontMetrics.height + editorBgRectangle.y
           if (y + menuBgRectangle.height > editorBgRectangle.height) {
-             y -= menuBgRectangle.height + monospaceMetrics.height
+             y -= menuBgRectangle.height + fontMetrics.height
           }
           menuBgRectangle.x = x
           menuBgRectangle.y = y
@@ -261,20 +267,20 @@ Item {
 
         function doSendResize() {
             item.sendResize(
-                Math.floor(editor.height / monospaceMetrics.height),
-                Math.floor(editorBgRectangle.width / monospaceMetrics.averageCharacterWidth)
+                Math.floor(editor.height / fontMetrics.height),
+                Math.floor(editorBgRectangle.width / fontMetrics.averageCharacterWidth)
             )
         }
     }
 
     FontMetrics {
-        id: monospaceMetrics
+        id: fontMetrics
         font.family: editor.font.family
     }
 
     TextMetrics {
-        id: menuEntryMetrics
-        text: "a"
+        id: textMetrics
+        font.family: editor.font.family
     }
 }
 

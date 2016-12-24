@@ -62,13 +62,5 @@ GridView {
        }
    }
 
-   /*highlight: Rectangle {
-      width: menu.cellWidth;
-      height: menu.cellHeight
-      color: "lightsteelblue" // TODO
-      x: menu.currentItem.x
-      y: menu.currentItem.y
-   }*/
-
    onCurrentItemChanged: { /*console.log(model.get(menu.currentIndex).name + ' selected')*/ }
 }
