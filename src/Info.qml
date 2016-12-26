@@ -12,6 +12,9 @@ Rectangle {
    width: textBox.width
    height: titleLabel.height + textBox.height
 
+   border.color: textColor
+   border.width: 1
+
    Text {
       id: titleLabel
       font.family: fontFamily
@@ -27,6 +30,7 @@ Rectangle {
       font.family: fontFamily
       color: textColor
       width: Math.min(paintedWidth, maxWidth)
+      padding: 4
 
       wrapMode: Text.Wrap
       anchors.top: titleLabel.bottom
