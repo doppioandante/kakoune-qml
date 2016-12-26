@@ -2,8 +2,9 @@
 	<qresource prefix="/">
 		<file>mainwindow.qml</file>
 		<file>KakounePane.qml</file>
-		<file>Menu.qml</file>
 		<file>StatusBar.qml</file>
+		<file>Menu.qml</file>
+		<file>Info.qml</file>
 		<file>atom.js</file>
 		<file>key_helpers.js</file>
 	</qresource>

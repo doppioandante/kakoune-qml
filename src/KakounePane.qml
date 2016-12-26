@@ -8,7 +8,6 @@ Item {
     property color defaultBg: "#FFFFCC"
     property color defaultFg: "#000000"
   
-
     Rectangle {
         id: editorBgRectangle
         width: parent.width
@@ -29,6 +28,8 @@ Item {
     Rectangle {
        id: menuBgRectangle
        visible: false
+       height: 0
+       anchors.bottom: statusBar.top
 
        clip: true
 
@@ -52,6 +53,12 @@ Item {
           // limit to 10 rows
           return (rows > 10 ? 10 : rows) * menu.cellHeight
        }
+    }
+
+    Info {
+        id: infoBox
+        fontFamily: editor.font.family
+        visible: false
     }
 
     StatusBar {
@@ -84,26 +91,33 @@ Item {
 
         switch (rpc.method) {
             case 'draw':
-              rpc_draw(rpc.params)
+               rpc_draw(rpc.params)
             break
 
             case 'draw_status':
-              rpc_draw_status(rpc.params)
+               rpc_draw_status(rpc.params)
             break
 
             case 'refresh':
+               console.log(infoBox.debug.paintedWidth)
             break
 
             case 'menu_show':
-              rpc_menu_show(rpc.params)
+               rpc_menu_show(rpc.params)
             break
 
             case 'menu_hide':
-              rpc_menu_hide()
+               rpc_menu_hide()
             break
 
             case 'menu_select':
-              rpc_menu_select(rpc.params)
+               rpc_menu_select(rpc.params)
+            break
+            case 'info_show':
+               rpc_info_show(rpc.params)
+            break
+            case 'info_hide':
+               rpc_info_hide(rpc.params)
             break
         }
     }
@@ -146,11 +160,6 @@ Item {
       editorBgRectangle.color = default_face.bg
 
       editor.text = text
-    }
-
-    function rpc_refresh(params) {
-      if (params[0]) {
-      }
     }
 
     function rpc_menu_show(params) {
@@ -228,9 +237,10 @@ Item {
     }
 
     function rpc_menu_hide() {
-       menuBgRectangle.anchors.bottom = undefined
-       editorBgRectangle.anchors.bottom = statusBar.top
        menuBgRectangle.visible = false
+       menuBgRectangle.anchors.bottom = statusBar.top
+       editorBgRectangle.anchors.bottom = statusBar.top
+       menuBgRectangle.height = 0
        menuBgRectangle.x = 0
     }
 
@@ -252,6 +262,48 @@ Item {
            var element = menu.model.get(id)
            element.entryText = Atom.render(element.rawText, menu.selectedFace)
        }
+    }
+
+    function rpc_info_show(params) {
+       var title = params[0]
+       var text = params[1]
+       var anchor = params[2]
+       var face = params[3]
+       var style = params[4]
+
+       face = face_or_default(face)
+
+       infoBox.title = title
+       infoBox.text = text
+       infoBox.color = face.bg
+       infoBox.textColor = face.fg
+       infoBox.maxWidth = item.width
+
+       if (style == 'prompt') {
+          infoBox.anchors.right = item.right
+          infoBox.anchors.bottom = menuBgRectangle.top
+       } else if (style == 'inline') {
+          var x = (anchor.column + 1) * fontMetrics.averageCharacterWidth + editorBgRectangle.x
+          if (x + infoBox.width > editorBgRectangle.width) {
+             x = editorBgRectangle.width - infoBox.width
+          }
+          var y = (anchor.line + 1) * fontMetrics.height + editorBgRectangle.y
+          if (y + infoBox.height > editorBgRectangle.height) {
+             y -= infoBox.height + fontMetrics.height
+          }
+
+          infoBox.x = x
+          infoBox.y = y
+          console.log('triggered')
+       }
+       infoBox.visible = true
+    }
+
+    function rpc_info_hide(params) {
+       infoBox.visible = false
+       infoBox.anchors.bottom = undefined
+       infoBox.anchors.right = undefined
+       infoBox.anchors.margins = 0
     }
 
     function face_or_default(face) {
