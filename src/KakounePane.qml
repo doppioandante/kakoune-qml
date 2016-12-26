@@ -55,6 +55,7 @@ Item {
        }
     }
 
+
     Info {
         id: infoBox
         fontFamily: editor.font.family
@@ -99,7 +100,6 @@ Item {
             break
 
             case 'refresh':
-               console.log(infoBox.debug.paintedWidth)
             break
 
             case 'menu_show':
@@ -272,6 +272,9 @@ Item {
        var style = params[4]
 
        face = face_or_default(face)
+       // must be called because on rpc_info_show could follow another one
+       // without calling rpc_info_hide before
+       rpc_info_hide({})
 
        infoBox.title = title
        infoBox.text = text
@@ -282,19 +285,19 @@ Item {
        if (style == 'prompt') {
           infoBox.anchors.right = item.right
           infoBox.anchors.bottom = menuBgRectangle.top
-       } else if (style == 'inline') {
-          var x = (anchor.column + 1) * fontMetrics.averageCharacterWidth + editorBgRectangle.x
+       } else if (style.indexOf('inline') == 0) {
+          var x = (anchor.column) * fontMetrics.averageCharacterWidth + editorBgRectangle.x
           if (x + infoBox.width > editorBgRectangle.width) {
              x = editorBgRectangle.width - infoBox.width
           }
-          var y = (anchor.line + 1) * fontMetrics.height + editorBgRectangle.y
+          var lineInc = (style == 'inlineAbove') ? -1 : 1;
+          var y = (anchor.line + lineInc) * fontMetrics.height + editorBgRectangle.y
           if (y + infoBox.height > editorBgRectangle.height) {
              y -= infoBox.height + fontMetrics.height
           }
 
           infoBox.x = x
           infoBox.y = y
-          console.log('triggered')
        }
        infoBox.visible = true
     }
@@ -304,6 +307,7 @@ Item {
        infoBox.anchors.bottom = undefined
        infoBox.anchors.right = undefined
        infoBox.anchors.margins = 0
+       infoBox.text = ''
     }
 
     function face_or_default(face) {
