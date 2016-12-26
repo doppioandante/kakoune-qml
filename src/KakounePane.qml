@@ -207,7 +207,6 @@ Item {
           menuBgRectangle.width = item.width
           menuBgRectangle.height = menuBgRectangle.computeHeight()
           menuBgRectangle.anchors.bottom = statusBar.top
-          editorBgRectangle.anchors.bottom = menuBgRectangle.top
        }
        else {
           var x = (anchor.column + 1) * fontMetrics.averageCharacterWidth + editorBgRectangle.x
@@ -239,7 +238,6 @@ Item {
     function rpc_menu_hide() {
        menuBgRectangle.visible = false
        menuBgRectangle.anchors.bottom = statusBar.top
-       editorBgRectangle.anchors.bottom = statusBar.top
        menuBgRectangle.height = 0
        menuBgRectangle.x = 0
     }
