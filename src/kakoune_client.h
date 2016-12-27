@@ -44,11 +44,7 @@ public:
                 qDebug() << "stderr: " << m_process.readAllStandardError();
         });
 
-        connect(&m_process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-            [=] (int code, QProcess::ExitStatus) {
-            	qDebug() << "Child process exited with code: " << code;
-        });
-
+        connect(&m_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(subprocess_finished(int, QProcess::ExitStatus)));
         connect(component, SIGNAL(sendKey(QString)), this, SLOT(rpc_keys(QString)));
         connect(component, SIGNAL(sendResize(int, int)), this, SLOT(rpc_resize(int, int)));
 
@@ -59,6 +55,9 @@ public:
     {
         m_process.close();
     }
+
+signals:
+    void subprocess_finished(int code, QProcess::ExitStatus);
 
 public slots:
     void rpc_keys(const QString &v)
