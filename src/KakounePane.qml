@@ -5,8 +5,8 @@ import "key_helpers.js" as KeyHelper
 Item {
     id: item
 
-    property color defaultBg: "#FFFFCC"
-    property color defaultFg: "#000000"
+    property color defaultBg: "#000000"
+    property color defaultFg: "#FFFFFF"
   
     Rectangle {
         id: editorBgRectangle
