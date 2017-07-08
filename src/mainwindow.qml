@@ -9,6 +9,8 @@ Window {
     height: 400
 
     KakounePane {
+      objectName: "kakounePane" // needed by findChild() in main.cpp
+
       anchors.fill: parent;
       visible: true;
       focus: true;

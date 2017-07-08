@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cassert>
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QProcess>
@@ -10,7 +12,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine(QUrl("qrc:/mainwindow.qml"));
 
-    QObject* kakPane = engine.rootObjects()[0]->children()[0];
+    QObject* kakPane = engine.rootObjects().first()->findChild<QObject*>("kakounePane");
+    assert(kakPane != nullptr);
 
     KakouneClient clt{"kakouneqml", kakPane};
     QObject::connect(&clt, SIGNAL(subprocess_finished(int, QProcess::ExitStatus)), &app, SLOT(quit()));
