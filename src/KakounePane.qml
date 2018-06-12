@@ -279,9 +279,9 @@ Item {
        infoBox.textColor = face.fg
        infoBox.maxWidth = Math.floor(item.width * 0.7)
 
-       infoBox.setText(text)
+       infoBox.text = text
 
-       if (infoBox.getCHeight() < infoBox.height) infoBox.height = infoBox.getCHeight();
+       //if (infoBox.getCHeight() < infoBox.height) infoBox.height = infoBox.getCHeight();
 
        if (style === 'prompt') {
           infoBox.anchors.right = item.right
