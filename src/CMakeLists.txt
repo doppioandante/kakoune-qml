@@ -5,5 +5,4 @@ set(kakouneqml_SOURCES main.cpp kakoune_client.h)
 qt5_add_resources(kakouneqml_QRC resources.qrc)
 
 add_executable(kakouneqml ${kakouneqml_SOURCES} ${kakouneqml_QRC})
-qt5_use_modules(kakouneqml Qml Quick)
 target_link_libraries(kakouneqml Qt5::Core Qt5::Qml Qt5::Quick)

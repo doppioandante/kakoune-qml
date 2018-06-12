@@ -177,7 +177,7 @@ Item {
        menu.normalFace = normal_face
        menu.selectedFace = selected_face
 
-       if (style != 'prompt' && style != 'inline') {
+       if (style !== 'prompt' && style !== 'inline') {
            return
        }
 
@@ -201,7 +201,7 @@ Item {
        } 
        menu.entryWidth = maxWidth
 
-       if (style == 'prompt') {
+       if (style === 'prompt') {
           menu.rightPaddingWidth = 5 * fontMetrics.averageCharacterWidth
 
           menuBgRectangle.width = item.width
@@ -275,20 +275,23 @@ Item {
        rpc_info_hide({})
 
        infoBox.title = title
-       infoBox.text = text
        infoBox.color = face.bg
        infoBox.textColor = face.fg
-       infoBox.maxWidth = item.width
+       infoBox.maxWidth = Math.floor(item.width * 0.7)
 
-       if (style == 'prompt') {
+       infoBox.setText(text)
+
+       if (infoBox.getCHeight() < infoBox.height) infoBox.height = infoBox.getCHeight();
+
+       if (style === 'prompt') {
           infoBox.anchors.right = item.right
           infoBox.anchors.bottom = menuBgRectangle.top
-       } else if (style.indexOf('inline') == 0) {
+       } else if (style.indexOf('inline') === 0) {
           var x = (anchor.column) * fontMetrics.averageCharacterWidth + editorBgRectangle.x
           if (x + infoBox.width > editorBgRectangle.width) {
              x = editorBgRectangle.width - infoBox.width
           }
-          var lineInc = (style == 'inlineAbove') ? -1 : 1;
+          var lineInc = (style === 'inlineAbove') ? -1 : 1;
           var y = (anchor.line + lineInc) * fontMetrics.height + editorBgRectangle.y
           if (y + infoBox.height > editorBgRectangle.height) {
              y -= infoBox.height + fontMetrics.height
