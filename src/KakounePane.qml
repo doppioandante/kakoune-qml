@@ -8,21 +8,11 @@ Item {
     property color defaultBg: "#000000"
     property color defaultFg: "#FFFFFF"
   
-    Rectangle {
+    EditorPane {
         id: editorBgRectangle
         width: parent.width
         height: { parent.height - statusBar.height }
         anchors.bottom: statusBar.top
-        color: defaultBg
-
-        Text {
-            id: editor
-            textFormat: TextEdit.RichText
-            font.family: "Monospace"
-
-            anchors.fill: parent
-            anchors.verticalCenter: parent.verticalCenter
-        }
     }
 
     Rectangle {
@@ -57,7 +47,7 @@ Item {
 
     Info {
         id: infoBox
-        fontFamily: editor.font.family
+        fontFamily: editorBgRectangle.editor.font.family
         visible: false
     }
 
@@ -144,16 +134,10 @@ Item {
       // TODO: padding face
 
       default_face = face_or_default(default_face)
+      item.defaultFg = default_face.fg
+      item.defaultBg = default_face.bg
 
-      let text = '<pre>'
-      for (let i = 0; i < lines.length; i++) {
-         text += Atom.renderAtoms(lines[i], default_face)
-      }
-      text += '</pre>'
-
-      editorBgRectangle.color = default_face.bg
-
-      editor.text = text
+      editorBgRectangle.draw(lines, default_face)
     }
 
     function rpc_menu_show(params) {
@@ -318,7 +302,7 @@ Item {
 
         function doSendResize() {
             item.sendResize(
-                Math.floor(editor.height / fontMetrics.height),
+                Math.floor(editorBgRectangle.editor.height / fontMetrics.height),
                 Math.floor(editorBgRectangle.width / fontMetrics.averageCharacterWidth)
             )
         }
@@ -326,12 +310,12 @@ Item {
 
     FontMetrics {
         id: fontMetrics
-        font.family: editor.font.family
+        font.family: editorBgRectangle.editor.font.family
     }
 
     TextMetrics {
         id: textMetrics
-        font.family: editor.font.family
+        font.family: editorBgRectangle.editor.font.family
     }
 }
 
