@@ -61,11 +61,11 @@ Item {
         visible: false
     }
 
-    /*StatusBar {
+    StatusBar {
         id: statusBar
         width: parent.width
         anchors.bottom: parent.bottom
-    }*/
+    }
 
     signal sendKey(string keys)
 
