@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>mainwindow.qml</file>
-        <file>KakounePane.qml</file>
+        <file>SingleWindow.qml</file>
         <file>StatusBar.qml</file>
         <file>Menu.qml</file>
         <file>Info.qml</file>

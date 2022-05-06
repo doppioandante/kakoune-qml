@@ -8,7 +8,7 @@ Window {
     width: 600
     height: 400
 
-    KakounePane {
+    SingleWindow {
       objectName: "kakounePane" // needed by findChild() in main.cpp
 
       anchors.fill: parent;
