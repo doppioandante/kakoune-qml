@@ -31,10 +31,6 @@ Rectangle {
     }
 
     function _render(id, line, default_face) {
-        var text = '<pre>'
-        for (var i = 0; i < line.length; i++) {
-            text += Atom.render(line[i].contents, Atom.default_face(line[i].face, default_face))
-        }
-        id.text = text + '</pre>'
+        id.text = '<pre>' + Atom.renderAtoms(line, default_face) + '</pre>'
     }
 }

@@ -104,15 +104,15 @@ Item {
             break
 
             case 'menu_show':
-               //rpc_menu_show(rpc.params)
+               rpc_menu_show(rpc.params)
             break
 
             case 'menu_hide':
-              // rpc_menu_hide()
+               rpc_menu_hide()
             break
 
             case 'menu_select':
-               //rpc_menu_select(rpc.params)
+               rpc_menu_select(rpc.params)
             break
             case 'info_show':
                rpc_info_show(rpc.params)
@@ -144,17 +144,10 @@ Item {
       // TODO: padding face
 
       default_face = face_or_default(default_face)
-      item.defaultFg = default_face.fg
-      item.defaultBg = default_face.bg
 
       let text = '<pre>'
       for (let i = 0; i < lines.length; i++) {
-         for (let j = 0; j < lines[i].length; j++) {
-            // HACK
-            let c = lines[i][j].contents.replace('\n', ' ')
-            text += Atom.render(c, face_or_default(lines[i][j].face))
-         }
-         text += Atom.render("\n", default_face)
+         text += Atom.renderAtoms(lines[i], default_face)
       }
       text += '</pre>'
 
@@ -270,17 +263,13 @@ Item {
        let face = params[3]
        let style = params[4]
 
+        // must be called because on rpc_info_show could follow another one
+        // without calling rpc_info_hide before
+        rpc_info_hide({})
+
        face = face_or_default(face)
-       // must be called because on rpc_info_show could follow another one
-       // without calling rpc_info_hide before
-       rpc_info_hide({})
-
-       infoBox.title = title
-       infoBox.color = face.bg
-       infoBox.textColor = face.fg
+       infoBox.render(title, text, face)
        infoBox.maxWidth = Math.floor(item.width * 0.7)
-
-       infoBox.text = text
 
        //if (infoBox.getCHeight() < infoBox.height) infoBox.height = infoBox.getCHeight();
 

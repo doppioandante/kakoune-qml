@@ -14,9 +14,9 @@ function escapeHtml(string) {
 
 function render(text, face) {
     text = escapeHtml(text);
-    var attributes = face.attributes;
+    let attributes = face.attributes;
 
-    var style = '';
+    let  style = '';
     style += "color:'" + face.fg + "';";
     style += "background-color:'" + face.bg + "';";
 
@@ -36,18 +36,26 @@ function render(text, face) {
     return '<code style="' + style + '">' + text + '</code>';
 }
 
+function renderAtoms(atoms, default_face) {
+    let result = ''
+    for (let i = 0; i < atoms.length; i++) {
+        result += Atom.render(atoms[i].contents, Atom.default_face(atoms[i].face, default_face))
+    }
+    return result
+}
+
 function default_face(face, default_face) {
-    var fg = face.fg === 'default' ? default_face.fg : parse_color(face.fg)
-    var bg = face.bg === 'default' ? default_face.bg : parse_color(face.bg)
+    let fg = face.fg === 'default' ? default_face.fg : parse_color(face.fg)
+    let bg = face.bg === 'default' ? default_face.bg : parse_color(face.bg)
 
     return {fg: fg, bg: bg, attributes: face.attributes}
 }
 
 function parse_color(color) {
     if (color.startsWith('rgb:')) {
-        return '#' + color.substring(4);
+        return '#' + color.substring(4)
     } else if (color.startsWith('rgba:')) {
-        return '#' + color.substring(5);
+        return '#' + color.substring(5)
     }
     // named color
     return color;
