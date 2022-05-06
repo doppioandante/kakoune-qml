@@ -3,7 +3,7 @@ import "atom.js" as Atom
 
 Rectangle {
     id: editorPane
-    property alias editor: editor
+    property alias font: editor.font
 
     Text {
         id: editor

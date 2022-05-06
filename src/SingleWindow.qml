@@ -47,7 +47,7 @@ Item {
 
     Info {
         id: infoBox
-        fontFamily: editorBgRectangle.editor.font.family
+        fontFamily: editorBgRectangle.font.family
         visible: false
     }
 
@@ -302,7 +302,7 @@ Item {
 
         function doSendResize() {
             item.sendResize(
-                Math.floor(editorBgRectangle.editor.height / fontMetrics.height),
+                Math.floor(editorBgRectangle.height / fontMetrics.height),
                 Math.floor(editorBgRectangle.width / fontMetrics.averageCharacterWidth)
             )
         }
@@ -310,12 +310,12 @@ Item {
 
     FontMetrics {
         id: fontMetrics
-        font.family: editorBgRectangle.editor.font.family
+        font.family: editorBgRectangle.font.family
     }
 
     TextMetrics {
         id: textMetrics
-        font.family: editorBgRectangle.editor.font.family
+        font.family: editorBgRectangle.font.family
     }
 }
 
