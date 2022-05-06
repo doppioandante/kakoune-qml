@@ -25,7 +25,8 @@ public:
     KakouneClient(const QString& session, QObject* component):
         m_kakounePane(component)
     {
-        connect(&m_process, &QProcess::readyReadStandardOutput, [=] () {
+        (void) session;
+        connect(&m_process, &QProcess::readyReadStandardOutput, component, [=] () {
               m_buffer.append(m_process.readAllStandardOutput());
 
               int last = 0;
@@ -40,13 +41,13 @@ public:
               m_buffer = m_buffer.mid(last);
         });
 
-        connect(&m_process, &QProcess::readyReadStandardError, [=] () {
+        connect(&m_process, &QProcess::readyReadStandardError, component,  [=] () {
                 qDebug() << "stderr: " << m_process.readAllStandardError();
         });
 
-        connect(&m_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(subprocess_finished(int, QProcess::ExitStatus)));
+        connect(&m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SIGNAL(subprocess_finished(int,QProcess::ExitStatus)));
         connect(component, SIGNAL(sendKey(QString)), this, SLOT(rpc_keys(QString)));
-        connect(component, SIGNAL(sendResize(int, int)), this, SLOT(rpc_resize(int, int)));
+        connect(component, SIGNAL(sendResize(int,int)), this, SLOT(rpc_resize(int,int)));
 
         m_process.start("kak", {"-ui", "json"});
     }

@@ -16,6 +16,6 @@ int main(int argc, char *argv[])
     assert(kakPane != nullptr);
 
     KakouneClient clt{"kakouneqml", kakPane};
-    QObject::connect(&clt, SIGNAL(subprocess_finished(int, QProcess::ExitStatus)), &app, SLOT(quit()));
+    QObject::connect(&clt, SIGNAL(subprocess_finished(int,QProcess::ExitStatus)), &app, SLOT(quit()));
     return app.exec();
 }
