@@ -43,6 +43,11 @@ function convertKey(code, has_shift, has_alt, has_ctrl) {
             key = 'a-' + key;
         }
 
+        // this is sort of an exception
+        if (key == 'backtab') {
+            key = 's-tab';
+        }
+
         if (has_brackets)
         	key = '<' + key + '>';
     }
