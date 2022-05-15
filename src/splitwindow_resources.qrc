@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>singlemain.qml</file>
+        <file>splitmain.qml</file>
         <file>SingleWindow.qml</file>
         <file>StatusBar.qml</file>
         <file>Menu.qml</file>
