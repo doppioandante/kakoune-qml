@@ -1,8 +1,7 @@
 find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Qml Quick)
 
-set(kakouneqml_SOURCES main.cpp kakoune_client.h)
+set(singlewindow_SOURCES singlewindow.cpp kakoune_client.h)
+qt5_add_resources(singlewindow_QRC resources.qrc)
 
-qt5_add_resources(kakouneqml_QRC resources.qrc)
-
-add_executable(kakouneqml ${kakouneqml_SOURCES} ${kakouneqml_QRC})
-target_link_libraries(kakouneqml Qt5::Core Qt5::Qml Qt5::Quick)
+add_executable(singlewindow ${singlewindow_SOURCES} ${singlewindow_QRC})
+target_link_libraries(singlewindow Qt5::Core Qt5::Qml Qt5::Quick)
