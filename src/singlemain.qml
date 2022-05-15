@@ -9,7 +9,9 @@ Window {
     height: 400
 
     SingleWindow {
-      objectName: "kakounePane" // needed by findChild() in main.cpp
+      objectName: "kakounePane"; // needed by findChild() in main.cpp
+
+      fontFamily: "Monospace";
 
       anchors.fill: parent;
       visible: true;

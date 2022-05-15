@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>mainwindow.qml</file>
+        <file>singlemain.qml</file>
         <file>SingleWindow.qml</file>
         <file>StatusBar.qml</file>
         <file>Menu.qml</file>
@@ -8,5 +8,6 @@
         <file>atom.js</file>
         <file>key_helpers.js</file>
         <file>EditorPane.qml</file>
+        <file>splitmain.qml</file>
     </qresource>
 </RCC>

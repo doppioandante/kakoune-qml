@@ -10,7 +10,7 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    QQmlApplicationEngine engine(QUrl("qrc:/mainwindow.qml"));
+    QQmlApplicationEngine engine(QUrl("qrc:/singlemain.qml"));
 
     QObject* kakPane = engine.rootObjects().constFirst()->findChild<QObject*>("kakounePane");
     assert(kakPane != nullptr);
