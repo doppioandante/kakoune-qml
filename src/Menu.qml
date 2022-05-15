@@ -20,6 +20,8 @@ GridView {
    highlightFollowsCurrentItem: true
    //keyNavigationEnabled: false
 
+   flow: GridView.FlowLeftToRight
+
    model: ListModel {}
 
    delegate: Component {
