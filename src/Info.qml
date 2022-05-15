@@ -7,7 +7,7 @@ Rectangle {
    id: infoRect
    property alias title: titleLabel.text
    property alias text:  textBox.text
-   property string fontFamily
+   property font fontFamily
    property real maxWidth
 
    width: textBox.width

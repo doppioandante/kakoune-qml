@@ -11,6 +11,8 @@ GridView {
    property int rightPaddingWidth
    property int entryWidth
 
+   property string fontFamily
+
    cellWidth: {
       // margin for space
       return entryWidth + rightPaddingWidth;
@@ -36,7 +38,7 @@ GridView {
                anchors.left: parent.left
 
                textFormat: TextEdit.RichText
-               font.family: "Monospace"
+               font.family: menu.fontFamily
                text: entryText // created dynamically by rpc_menu_show
 
                width: menu.entryWidth

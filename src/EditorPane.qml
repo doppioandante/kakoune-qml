@@ -3,12 +3,12 @@ import "atom.js" as Atom
 
 Rectangle {
     id: editorPane
-    property alias font: editor.font
+    property string fontFamily
 
     Text {
         id: editor
         textFormat: TextEdit.RichText
-        font.family: "Monospace"
+        font.family: editorPane.fontFamily
 
         anchors.fill: parent
         anchors.verticalCenter: parent.verticalCenter

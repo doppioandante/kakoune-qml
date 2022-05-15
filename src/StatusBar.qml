@@ -2,12 +2,14 @@ import QtQuick 2.7
 import "atom.js" as Atom
 
 Rectangle {
+    property string fontFamily
+
     height: statusLine.height + statusLine.anchors.margins
 
     Text {
         id: statusLine
         textFormat: TextEdit.RichText
-        font.family: "Monospace"
+        font.family: parent.fontFamily
 
         anchors.left: parent.left
         anchors.margins: 5

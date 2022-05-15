@@ -7,6 +7,7 @@ Item {
 
     property color defaultBg: "#000000"
     property color defaultFg: "#FFFFFF"
+    property string fontFamily
   
     EditorPane {
         id: editorBgRectangle
@@ -47,12 +48,13 @@ Item {
 
     Info {
         id: infoBox
-        fontFamily: editorBgRectangle.font.family
+        fontFamily: item.fontFamily
         visible: false
     }
 
     StatusBar {
         id: statusBar
+        fontFamily: item.fontFamily
         width: parent.width
         anchors.bottom: parent.bottom
     }
@@ -310,12 +312,12 @@ Item {
 
     FontMetrics {
         id: fontMetrics
-        font.family: editorBgRectangle.font.family
+        font.family: item.fontFamily
     }
 
     TextMetrics {
         id: textMetrics
-        font.family: editorBgRectangle.font.family
+        font.family: item.fontFamily
     }
 }
 
