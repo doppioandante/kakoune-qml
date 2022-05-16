@@ -8,5 +8,7 @@
         <file>atom.js</file>
         <file>key_helpers.js</file>
         <file>EditorPane.qml</file>
+        <file>Tile.qml</file>
+        <file>FocusableTile.qml</file>
     </qresource>
 </RCC>

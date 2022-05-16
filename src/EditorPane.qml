@@ -4,6 +4,7 @@ import "atom.js" as Atom
 Rectangle {
     id: editorPane
     property string fontFamily
+    property alias text: editor.text
 
     Text {
         id: editor

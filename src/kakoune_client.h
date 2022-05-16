@@ -1,3 +1,6 @@
+#ifndef KAKOUNE_CLIENT_H
+#define KAKOUNE_CLIENT_H
+
 #include <QObject>
 #include <QString>
 #include <QByteArray>
@@ -19,13 +22,11 @@ private:
     QProcess m_process;
     QByteArray m_buffer;
     QObject* m_kakounePane;
-    bool m_canWrite;
 
 public:
     KakouneClient(const QString& session, QObject* component):
         m_kakounePane(component)
     {
-        (void) session;
         connect(&m_process, &QProcess::readyReadStandardOutput, component, [=] () {
               m_buffer.append(m_process.readAllStandardOutput());
 
@@ -49,7 +50,7 @@ public:
         connect(component, SIGNAL(sendKey(QString)), this, SLOT(rpc_keys(QString)));
         connect(component, SIGNAL(sendResize(int,int)), this, SLOT(rpc_resize(int,int)));
 
-        m_process.start("kak", {"-ui", "json"});
+        m_process.start("kak", {"-ui", "json", "-c", session});
     }
 
     ~KakouneClient()
@@ -92,3 +93,4 @@ private:
     }
 };
 
+#endif

@@ -6,6 +6,7 @@
 #include <QProcess>
 
 #include "kakoune_client.h"
+#include "kakoune_server.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +16,7 @@ int main(int argc, char *argv[])
     QObject* kakPane = engine.rootObjects().constFirst()->findChild<QObject*>("kakounePane");
     assert(kakPane != nullptr);
 
+    KakouneServer srv{"kakouneqml"};
     KakouneClient clt{"kakouneqml", kakPane};
     QObject::connect(&clt, SIGNAL(subprocess_finished(int,QProcess::ExitStatus)), &app, SLOT(quit()));
     return app.exec();
