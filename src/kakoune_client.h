@@ -71,6 +71,7 @@ public slots:
         do_rpc_call(req);
     }
 
+
     void rpc_resize(int x, int y)
     {
         if (x > 0 and y > 0)

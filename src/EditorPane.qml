@@ -18,8 +18,17 @@ Rectangle {
     function draw(lines, default_face) {
         // TODO: padding face
         let text = '<pre>'
+        let max_width = Math.floor(editor.width / fontMetrics.averageCharacterWidth)
         for (var i = 0; i < lines.length; i++) {
+            let trailing_atom = lines[i][lines[i].length - 1]
+            trailing_atom.contents = trailing_atom.contents.replace(
+                '\n', ' ');
+            lines[i][lines[i].length - 1] = trailing_atom
+                
             text += Atom.renderAtoms(lines[i], default_face)
+            text += ' \n'
+            //console.log('line', i)
+            //console.log(text)
         }
         text += '</pre>'
 

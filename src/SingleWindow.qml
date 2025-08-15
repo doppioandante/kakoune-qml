@@ -75,6 +75,7 @@ Item {
 
     function processRpc(line) {
         let rpc = undefined
+
         try{
             rpc = JSON.parse(line)
         }
@@ -149,7 +150,6 @@ Item {
        let selected_face = params[2]
        let normal_face = params[3]
        let style = params[4]
-
        // TODO: can be different from editor
        normal_face = face_or_default(normal_face)
        selected_face = face_or_default(selected_face)
@@ -189,7 +189,8 @@ Item {
           menuBgRectangle.anchors.bottom = statusBar.top
        }
        else {
-          let x = (anchor.column + 1) * fontMetrics.averageCharacterWidth + editorBgRectangle.x
+          menuBgRectangle.anchors.bottom = undefined
+          let x = anchor.column * fontMetrics.averageCharacterWidth + editorBgRectangle.x
           if (x + menuBgRectangle.width > editorBgRectangle.width) {
              x = editorBgRectangle.width - menuBgRectangle.width
           }
@@ -210,6 +211,7 @@ Item {
           menuBgRectangle.x = x
           menuBgRectangle.y = y
        }
+  
 
        menuBgRectangle.color = normal_face.bg
        menuBgRectangle.visible = true
@@ -217,7 +219,7 @@ Item {
 
     function rpc_menu_hide() {
        menuBgRectangle.visible = false
-       menuBgRectangle.anchors.bottom = statusBar.top
+       menuBgRectangle.anchors.bottom = undefined
        menuBgRectangle.height = 0
        menuBgRectangle.x = 0
     }
@@ -282,6 +284,7 @@ Item {
     function rpc_info_hide(params) {
        infoBox.visible = false
        infoBox.anchors.bottom = undefined
+       infoBox.anchors.top = undefined
        infoBox.anchors.right = undefined
        infoBox.anchors.margins = 0
        infoBox.text = ''
@@ -305,7 +308,7 @@ Item {
         function doSendResize() {
             item.sendResize(
                 Math.floor(editorBgRectangle.height / fontMetrics.height),
-                Math.floor(editorBgRectangle.width / fontMetrics.averageCharacterWidth)
+                Math.round(editorBgRectangle.width / fontMetrics.averageCharacterWidth) + 2,
             )
         }
     }

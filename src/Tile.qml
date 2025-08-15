@@ -150,6 +150,9 @@ Item {
        let normal_face = params[3]
        let style = params[4]
 
+       console.log(anchor);
+       console.log(items);
+
        // TODO: can be different from editor
        normal_face = face_or_default(normal_face)
        selected_face = face_or_default(selected_face)

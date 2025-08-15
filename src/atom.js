@@ -40,6 +40,8 @@ function renderAtoms(atoms, default_face) {
     let result = ''
     for (let i = 0; i < atoms.length; i++) {
         result += Atom.render(atoms[i].contents, Atom.default_face(atoms[i].face, default_face))
+        if(atoms[i].contents.indexOf('\n') !== -1)
+            console.log('!!!!', atoms[i].contents.indexOf('\n'))
     }
     return result
 }
