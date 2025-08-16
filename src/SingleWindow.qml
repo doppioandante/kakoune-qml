@@ -8,13 +8,18 @@ Item {
     property color defaultBg: "#000000"
     property color defaultFg: "#FFFFFF"
     property string fontFamily
-  
+
+    signal sendKeys(string keys)
+    signal sendResize(int x, int y)
+    signal sendScroll(int amount, int line, int column)
+
     EditorPane {
         id: editorBgRectangle
         width: parent.width
         height: { parent.height - statusBar.height }
         anchors.bottom: statusBar.top
     }
+
 
     Rectangle {
        id: menuBgRectangle
@@ -59,7 +64,6 @@ Item {
         anchors.bottom: parent.bottom
     }
 
-    signal sendKey(string keys)
 
     Keys.onPressed: {
         let has_shift = true && (event.modifiers & Qt.ShiftModifier)
@@ -68,7 +72,7 @@ Item {
 
         let kak_key = KeyHelper.convertKey(event.key, has_shift, has_alt, has_ctrl);
         if (kak_key !== undefined) {
-            item.sendKey(kak_key)
+            item.sendKeys(kak_key)
         }
         event.accepted = false
     }
@@ -112,6 +116,13 @@ Item {
             break
             case 'info_hide':
                rpc_info_hide(rpc.params)
+            break
+
+            case 'set_cursor':
+               console.log('set_cursor')
+               console.log(JSON.stringify(rpc.params[1]))
+               if (rpc.params[0] == 'buffer')
+                   editorBgRectangle.cursorLine = rpc.params[1].line
             break
         }
     }
@@ -294,7 +305,6 @@ Item {
        return Atom.default_face(face, {fg: item.defaultFg, bg: item.defaultBg})
     }
 
-    signal sendResize(int x, int y)
 
     Connections {
         target: item
@@ -306,10 +316,12 @@ Item {
         }
 
         function doSendResize() {
+            let visibleLines = Math.floor(editorBgRectangle.height / fontMetrics.height)
             item.sendResize(
-                Math.floor(editorBgRectangle.height / fontMetrics.height),
+                visibleLines
                 Math.round(editorBgRectangle.width / fontMetrics.averageCharacterWidth) + 2,
             )
+            editorBgRectangle.visibleLines = visibleLines
         }
     }
 

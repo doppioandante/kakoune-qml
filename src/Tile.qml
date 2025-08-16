@@ -59,7 +59,7 @@ Item {
         anchors.bottom: parent.bottom
     }
 
-    signal sendKey(string keys)
+    signal sendKeys(string keys)
 
     Keys.onPressed: {
         let has_shift = true && (event.modifiers & Qt.ShiftModifier)
@@ -68,7 +68,7 @@ Item {
 
         let kak_key = KeyHelper.convertKey(event.key, has_shift, has_alt, has_ctrl);
         if (kak_key !== undefined) {
-            item.sendKey(kak_key)
+            item.sendKeys(kak_key)
         }
         event.accepted = false
     }

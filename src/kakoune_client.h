@@ -47,8 +47,9 @@ public:
         });
 
         connect(&m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SIGNAL(subprocess_finished(int,QProcess::ExitStatus)));
-        connect(component, SIGNAL(sendKey(QString)), this, SLOT(rpc_keys(QString)));
+        connect(component, SIGNAL(sendKeys(QString)), this, SLOT(rpc_keys(QString)));
         connect(component, SIGNAL(sendResize(int,int)), this, SLOT(rpc_resize(int,int)));
+        connect(component, SIGNAL(sendScroll(int,int,int)), this, SLOT(rpc_scroll(int,int,int)));
 
         m_process.start("kak", {"-ui", "json", "-c", session});
     }
@@ -78,6 +79,18 @@ public slots:
         {
             QJsonObject req{
                 {{"jsonrpc", "2.0"}, {"method", "resize"}, {"params", QJsonArray{x, y}}}
+            };
+
+            do_rpc_call(req);
+        }
+    }
+
+    void rpc_scroll(int amount, int line, int column)
+    {
+        if (line >= 0 and column >= 0)
+        {
+            QJsonObject req{
+                {{"jsonrpc", "2.0"}, {"method", "scroll"}, {"params", QJsonArray{amount}}}
             };
 
             do_rpc_call(req);
