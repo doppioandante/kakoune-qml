@@ -12,6 +12,7 @@ Item {
     signal sendKeys(string keys)
     signal sendResize(int x, int y)
     signal sendScroll(int amount, int line, int column)
+    signal getValue(string command)
 
     EditorPane {
         id: editorBgRectangle
@@ -318,7 +319,7 @@ Item {
         function doSendResize() {
             let visibleLines = Math.floor(editorBgRectangle.height / fontMetrics.height)
             item.sendResize(
-                visibleLines
+                visibleLines,
                 Math.round(editorBgRectangle.width / fontMetrics.averageCharacterWidth) + 2,
             )
             editorBgRectangle.visibleLines = visibleLines

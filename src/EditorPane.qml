@@ -10,6 +10,7 @@ Rectangle {
     property int cursorLine: 0
     property int bufferLines: 100
     property int visibleLines: 20
+    property bool sublineScroll: true
 
     Text {
         id: editor
@@ -20,7 +21,6 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
 
         property int pixelScrollAmount: 0
-        property bool sublineScroll: false
 
         /*ScrollBar {
             id: editorScrollbar
@@ -39,37 +39,23 @@ Rectangle {
         anchors.fill: parent
         onWheel: (evt) => {
             let y_delta = evt.angleDelta.y/120 * 4
-            if (editor.sublineScroll) {
-                let pixelScrollAmount = editor.pixelScrollAmount
-                pixelScrollAmount += y_delta
+            let pixelScrollAmount = editor.pixelScrollAmount
+            let discreteAmount = 0;
 
-                let cur_offset = Math.sign(editor.pixelScrollAmount)
-                let new_offset = Math.sign(pixelScrollAmount)
-                let amount = new_offset - cur_offset;
-
-                if (pixelScrollAmount > fontMetrics.height) {
-                    pixelScrollAmount -= fontMetrics.height
-                    amount += 1
-                } else if (pixelScrollAmount < -fontMetrics.height) {
-                    pixelScrollAmount += fontMetrics.height
-                    amount -= 1
-                }
-                console.log(pixelScrollAmount)
-                console.log(amount)
-
-                let view_key = amount > 0 ? "k" : "j"
-                if (amount != 0)
-                    item.sendKeys(Math.abs(amount).toString() + "v" + view_key)
+            pixelScrollAmount += y_delta * 8
+            if (editorPane.sublineScroll) {
+                discreteAmount = Math.floor(pixelScrollAmount / fontMetrics.height);
+                pixelScrollAmount -= discreteAmount * fontMetrics.height;
 
                 editor.anchors.topMargin = pixelScrollAmount
                 editor.pixelScrollAmount = pixelScrollAmount
             } else {
-                let amount = Math.sign(y_delta)
-                let view_key = amount > 0 ? "k" : "j"
-                if (amount != 0) {
-                    item.sendKeys(Math.abs(amount).toString() + "v" + view_key)
-                    evt.accepted = true
-                }
+                discreteAmount = Math.floor(pixelScrollAmount/fontMetrics.height);
+            }
+            let view_key = discreteAmount > 0 ? "k" : "j"
+            if (discreteAmount != 0) {
+                item.sendKeys(Math.abs(discreteAmount).toString() + "v" + view_key)
+                evt.accepted = true
             }
         }
     }
