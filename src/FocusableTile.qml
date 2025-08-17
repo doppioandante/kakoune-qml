@@ -3,8 +3,10 @@ import QtQuick 2.0
 FocusScope {
     id: scope
 
+    property alias tile: tile
     property alias fontFamily: tile.fontFamily
     property alias objectName: tile.objectName
+    required property int elemId
     x: tile.x; y: tile.y
     width: tile.width; height: tile.heigh
 

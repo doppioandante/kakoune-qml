@@ -11,7 +11,6 @@
 #include <QKeyEvent>
 #include <QProcess>
 
-#include <iostream>
 
 #include <QDebug>
 
