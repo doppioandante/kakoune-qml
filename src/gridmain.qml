@@ -44,7 +44,7 @@ Window {
             "SplitView.fillWidth": true,
         });
 
-        parentLayout.addItem(parentLayout.numPanes, object)
+        parentLayout.insertItem(parentLayout.numPanes, object)
         parentLayout.numPanes += 1
 
         return object.tile
@@ -62,7 +62,7 @@ Window {
             "SplitView.fillHeight": true,
             "SplitView.fillWidth": true,
         });
-        parentLayout.addItem(parentLayout.numPanes, object)
+        parentLayout.insertItem(parentLayout.numPanes, object)
         parentLayout.numPanes += 1
 
         return object

@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.16)
 project(kakouneqml)
 
 set(CMAKE_CXX_STANDARD 14)
-set(QT_REQUIRED_VERSION 5.5.0)
 
+#find_package(Qt5 5.13.0 REQUIRED COMPONENTS Core Qml Quick)
+find_package(Qt6 5.13.0 REQUIRED COMPONENTS Core Qml Quick)
+qt_standard_project_setup()
 # Find includes in corresponding build directories
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
