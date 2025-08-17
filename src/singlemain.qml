@@ -8,7 +8,7 @@ Window {
     width: 600
     height: 400
 
-    SingleWindow {
+    Tile {
       objectName: "kakounePane"; // needed by findChild() in main.cpp
 
       fontFamily: "Monospace";

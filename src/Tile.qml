@@ -9,6 +9,12 @@ Item {
     property color defaultFg: "#FFFFFF"
     property string fontFamily
 
+    signal sendKeys(string keys)
+    signal sendResize(int x, int y)
+    signal sendScroll(int amount, int line, int column)
+    signal getValue(string command)
+
+
     EditorPane {
         id: editorBgRectangle
         width: parent.width
@@ -58,8 +64,6 @@ Item {
         width: parent.width
         anchors.bottom: parent.bottom
     }
-
-    signal sendKeys(string keys)
 
     Keys.onPressed: {
         let has_shift = true && (event.modifiers & Qt.ShiftModifier)
@@ -112,6 +116,10 @@ Item {
             case 'info_hide':
                rpc_info_hide(rpc.params)
             break
+            case 'set_cursor':
+               if (rpc.params[0] == 'buffer')
+                   editorBgRectangle.cursorLine = rpc.params[1].line
+            break
         }
     }
 
@@ -149,9 +157,6 @@ Item {
        let selected_face = params[2]
        let normal_face = params[3]
        let style = params[4]
-
-       console.log(anchor);
-       console.log(items);
 
        // TODO: can be different from editor
        normal_face = face_or_default(normal_face)
@@ -285,6 +290,7 @@ Item {
     function rpc_info_hide(params) {
        infoBox.visible = false
        infoBox.anchors.bottom = undefined
+       infoBox.anchors.top = undefined
        infoBox.anchors.right = undefined
        infoBox.anchors.margins = 0
        infoBox.text = ''
@@ -293,8 +299,6 @@ Item {
     function face_or_default(face) {
        return Atom.default_face(face, {fg: item.defaultFg, bg: item.defaultBg})
     }
-
-    signal sendResize(int x, int y)
 
     Connections {
         target: item
@@ -306,10 +310,12 @@ Item {
         }
 
         function doSendResize() {
+            let visibleLines = Math.floor(editorBgRectangle.height / fontMetrics.height)
             item.sendResize(
-                Math.floor(editorBgRectangle.height / fontMetrics.height),
-                Math.floor(editorBgRectangle.width / fontMetrics.averageCharacterWidth)
+                visibleLines,
+                Math.round(editorBgRectangle.width / fontMetrics.averageCharacterWidth) + 2,
             )
+            editorBgRectangle.visibleLines = visibleLines
         }
     }
 
