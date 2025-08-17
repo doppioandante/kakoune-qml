@@ -1,8 +1,7 @@
-import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.13
 
-GridLayout {
-    rows: 1
-    columns: -1
+SplitView {
+    orientation: Qt.Horizontal
     property int numPanes: 0
     required property int elemId
 }

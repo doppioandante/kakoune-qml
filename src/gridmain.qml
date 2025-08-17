@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Window 2.2
-import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.13
 import Kakoune.ClientFactory 0.1
 
 Window {
@@ -19,15 +19,11 @@ Window {
 
     Component.onCompleted: {
         let newTile = createNewTile(gridLayout)
-        let newLayout = createSubLayout(gridLayout)
-        let newTile1 = createNewTile(newLayout)
-        let newLayout1 = createSubLayout(newLayout)
-        let newTile2 = createNewTile(newLayout1)
-        let newTile3 = createNewTile(newLayout1)
+        let newTile1 = createNewTile(gridLayout)
+        let newTile2 = createNewTile(gridLayout)
         ClientFactory.addNewClient(newTile)
         ClientFactory.addNewClient(newTile1)
         ClientFactory.addNewClient(newTile2)
-        ClientFactory.addNewClient(newTile3)
     }
 
     function createNewTile(parentLayout) {
@@ -38,42 +34,18 @@ Window {
             clip: true,
             focus: true,
             elemId: parentLayout.numPanes,
+            "SplitView.minimumWidth": 100,
+            "SplitView.minimumHeight": 100,
+            "SplitView.preferredWidth": Qt.binding(function() { 
+                return parentLayout.width / (parentLayout.numPanes+1);
+            }),
+            "SplitView.preferredHeight": parentLayout.height,
+            "SplitView.fillHeight": true,
+            "SplitView.fillWidth": true,
         });
 
+        parentLayout.addItem(parentLayout.numPanes, object)
         parentLayout.numPanes += 1
-        object.Layout.fillWidth = true
-        object.Layout.fillHeight = true
-        object.Layout.minimumWidth = 200
-        object.Layout.minimumHeight = 200
-
-        object.Layout.preferredWidth = Qt.binding(function() {
-            if (parentLayout.columns == -1) {
-                return parentLayout.width / parentLayout.numPanes
-            } else {
-                return parentLayout.width
-            }
-        })
-        object.Layout.preferredHeight = Qt.binding(function() {
-            if (parentLayout.rows == -1) {
-                return parentLayout.height / parentLayout.numPanes
-            } else {
-                return parentLayout.height
-            }
-        })
-        object.Layout.row = Qt.binding(function() {
-            if (parentLayout.rows == -1) {
-                return object.elemId
-            } else {
-                return 0;
-            }
-        })
-        object.Layout.column = Qt.binding(function() {
-            if (parentLayout.columns == -1) {
-                return object.elemId
-            } else {
-                return 0
-            }
-        })
 
         return object.tile
     }
@@ -82,42 +54,16 @@ Window {
         let component = Qt.createComponent("NestedLayout.qml")
         let object = component.createObject(parentLayout, {
             elemId: parentLayout.numPanes,
-            columns: 1,
-            rows: -1,
+            orientation: Qt.Vertical,
+            "SplitView.minimumWidth": 100,
+            "SplitView.minimumHeight": 100,
+            "SplitView.preferredWidth": 1,
+            "SplitView.preferredHeight": 1,
+            "SplitView.fillHeight": true,
+            "SplitView.fillWidth": true,
         });
-        object.Layout.fillWidth = true
-        object.Layout.fillHeight = true
-        object.Layout.minimumWidth = 200
-        object.Layout.minimumHeight = 200
-
-        object.Layout.preferredWidth = Qt.binding(function() {
-            if (parentLayout.columns == -1) {
-                return parentLayout.width / parentLayout.numPanes
-            } else {
-                return parentLayout.width
-            }
-        })
-        object.Layout.preferredHeight = Qt.binding(function() {
-            if (parentLayout.rows == -1) {
-                return parentLayout.height / parentLayout.numPanes
-            } else {
-                return parentLayout.height
-            }
-        })
-        object.Layout.row = Qt.binding(function() {
-            if (parentLayout.rows == -1) {
-                return object.elemId
-            } else {
-                return 0;
-            }
-        })
-        object.Layout.column = Qt.binding(function() {
-            if (parentLayout.columns == -1) {
-                return object.elemId
-            } else {
-                return 0
-            }
-        })
+        parentLayout.addItem(parentLayout.numPanes, object)
+        parentLayout.numPanes += 1
 
         return object
     }
