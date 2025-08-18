@@ -1,6 +1,6 @@
-import QtQuick 2.7
-import QtQuick.Window 2.2
-import QtQuick.Controls 2.13
+import QtQuick 2.12
+import QtQuick.Window 2.12
+import QtQuick.Layouts 1.11
 import Kakoune.ClientFactory 0.1
 
 Window {
@@ -34,33 +34,17 @@ Window {
             clip: true,
             focus: true,
             elemId: parentLayout.numPanes,
-            "SplitView.minimumWidth": 100,
-            "SplitView.minimumHeight": 100,
-            "SplitView.preferredWidth": Qt.binding(function() { 
-                return parentLayout.width / (parentLayout.numPanes+1);
-            }),
-            "SplitView.preferredHeight": parentLayout.height,
-            "SplitView.fillHeight": true,
-            "SplitView.fillWidth": true,
+            'Layout.minimumWidth': 100,
+            'Layout.minimumHeight': 100,
         });
 
-        parentLayout.insertItem(parentLayout.numPanes, object)
-        parentLayout.numPanes += 1
-
-        return object.tile
+        return parentLayout.addItemPreservingRatios(object).tile
     }
 
     function createSubLayout(parentLayout) {
         let component = Qt.createComponent("NestedLayout.qml")
         let object = component.createObject(parentLayout, {
             elemId: parentLayout.numPanes,
-            orientation: Qt.Vertical,
-            "SplitView.minimumWidth": 100,
-            "SplitView.minimumHeight": 100,
-            "SplitView.preferredWidth": 1,
-            "SplitView.preferredHeight": 1,
-            "SplitView.fillHeight": true,
-            "SplitView.fillWidth": true,
         });
         parentLayout.insertItem(parentLayout.numPanes, object)
         parentLayout.numPanes += 1

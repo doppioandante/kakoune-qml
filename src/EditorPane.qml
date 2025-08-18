@@ -1,5 +1,5 @@
-import QtQuick 2.7
-import QtQuick.Controls 2.7
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 import "atom.js" as Atom
 
 Rectangle {

@@ -11,5 +11,6 @@
         <file>Tile.qml</file>
         <file>FocusableTile.qml</file>
         <file>NestedLayout.qml</file>
+        <file>NestedHandle.qml</file>
     </qresource>
 </RCC>

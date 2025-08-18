@@ -1,4 +1,4 @@
-import QtQuick 2.7
+import QtQuick 2.12
 import "atom.js" as Atom
 import "key_helpers.js" as KeyHelper
 
