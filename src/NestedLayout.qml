@@ -14,8 +14,21 @@ GridLayout {
     property int prevResizedId: -1
     property int nextResizedId: -1
 
-    rows: (orientation == Qt.Horizontal) ? -1 : 1
-    columns: (orientation == Qt.Vertical) ? 1 : -1
+    function prefSize(item) {
+        return (orientation == Qt.Horizontal) ? item.Layout.preferredWidth : item.Layout.preferredHeight
+    }
+
+    function assingPrefSize(item, size) {
+        if (orientation == Qt.Horizontal) {
+             item.Layout.preferredWidth = size
+        } else {
+            item.Layout.preferredHeight = size
+        }
+    }
+
+    function minSize(item) {
+        return (orientation == Qt.Horizontal) ? item.Layout.minimumWidth : item.Layout.minimumHeight
+    }
 
     HoverHandler {
         id: moveHover
@@ -25,20 +38,15 @@ GridLayout {
             let prevItem = splitview.items[splitview.prevResizedId]
             let nextItem = splitview.items[splitview.nextResizedId]
             let relativeP = splitview.mapToItem(prevItem, moveHover.point.position)
+            let relativeCoord = (orientation == Qt.Horizontal) ? relativeP.x : relativeP.y
 
-            let diff = prevItem.Layout.preferredWidth - relativeP.x
-            let maxPrevDiff = prevItem.Layout.preferredWidth - prevItem.Layout.minimumWidth
-            let maxNextDiff = nextItem.Layout.preferredWidth - nextItem.Layout.minimumWidth
+            let diff = prefSize(prevItem) - relativeCoord
+            let maxPrevDiff = prefSize(prevItem) - minSize(prevItem)
+            let maxNextDiff = prefSize(nextItem) - minSize(nextItem)
             diff = Math.min(diff, maxPrevDiff)
             diff = Math.max(diff, -maxNextDiff)
-            prevItem.Layout.preferredWidth -= diff
-            nextItem.Layout.preferredWidth += diff
-
-            console.log(
-                splitview.items[0].Layout.preferredWidth,
-                splitview.items[1].Layout.preferredWidth,
-                splitview.items[2].Layout.preferredWidth,
-            );
+            assingPrefSize(prevItem, prefSize(prevItem) - diff)
+            assingPrefSize(nextItem, prefSize(nextItem) + diff)
         }
     }
 
@@ -49,7 +57,14 @@ GridLayout {
     function addItemPreservingRatios(item) {
         item.Layout.fillHeight = true
         item.Layout.fillWidth = true
-        item.Layout.column = 2*splitview.numPanes
+        item.Layout.column = Qt.binding(function() {
+            return (splitview.orientation == Qt.Horizontal)
+                 ? 2*item.elemId : 0
+        })
+        item.Layout.row = Qt.binding(function() {
+            return (splitview.orientation == Qt.Horizontal)
+                 ? 0 : 2*item.elemId
+        })
 
         splitview.items.push(item)
 
@@ -69,35 +84,63 @@ GridLayout {
     }
 
     function addHandle() {
-        let col = 2*(splitview.numPanes-1)-1 
         let component = Qt.createComponent("NestedHandle.qml")
+        let pos = 2*(splitview.numPanes-1)-1 
         let object = component.createObject(splitview, {
             color: 'orange',
-            'Layout.preferredWidth': 10,
+            gridPos: pos,
+            'Layout.preferredWidth': Qt.binding(function() {
+                if (splitview.orientation == Qt.Horizontal)
+                    return 10;
+                else
+                    return -1;
+            }),
+            'Layout.preferredHeight': Qt.binding(function() {
+                if (splitview.orientation == Qt.Vertical)
+                    return 10;
+                else
+                    return -1;
+            }),
             'Layout.fillWidth': true,
             'Layout.fillHeight': true,
-            'Layout.column': col,
         });
+
+        object.Layout.column = Qt.binding(function() {
+            return (splitview.orientation == Qt.Horizontal)
+                 ? pos : 0
+        })
+        object.Layout.row = Qt.binding(function() {
+            return (splitview.orientation == Qt.Horizontal)
+                 ? 0 : pos
+        })
         splitview.handles.push(object)
         object.resizeHandleStateChange.connect(handleChildResizeTrigger)
     }
 
-    function handleChildResizeTrigger(col, state) {
+    function handleChildResizeTrigger(pos, state) {
         moveHover.enabled = state
 
         if (state) {
-            splitview.prevResizedId = (col-1)/2
-            splitview.nextResizedId = (col-1)/2 + 1
-            console.log(splitview.prevResizedId)
+            splitview.prevResizedId = (pos-1)/2
+            splitview.nextResizedId = (pos-1)/2 + 1
         } else {
             splitview.prevResizedId = -1
             splitview.nextResizedId = -1
+            recomputeWeights()
         }
     }
 
     function assignAllPreferredSizes() {
+        let leadingSize = (splitview.orientation == Qt.Horizontal) ? splitview.width : splitview.height
         for (let i = 0; i < splitview.numPanes; i++) {
-            splitview.items[i].Layout.preferredWidth = splitview.width * splitview.weights[i]
+            assingPrefSize(splitview.items[i], leadingSize * splitview.weights[i])
+        }
+    }
+
+    function recomputeWeights() {
+        let leadingSize = (splitview.orientation == Qt.Horizontal) ? splitview.width : splitview.height
+        for (let i = 0; i < splitview.numPanes; i++) {
+            splitview.weights[i] = prefSize(splitview.items[i]) / leadingSize
         }
     }
 }

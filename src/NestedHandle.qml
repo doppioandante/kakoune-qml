@@ -5,6 +5,7 @@ Rectangle {
     id: handle
     anchors.margins: 0
     border.width: 0
+    required property int gridPos
 
     signal resizeHandleStateChange(int col, bool state)
     signal resizeHandleMove(int col, real x, real y)
@@ -14,7 +15,7 @@ Rectangle {
         acceptedButtons: Qt.LeftButton
 
         onActiveChanged: {
-            handle.resizeHandleStateChange(handle.Layout.column, active)
+            handle.resizeHandleStateChange(gridPos, active)
         }
     }
 }
